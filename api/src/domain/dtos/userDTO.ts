@@ -34,7 +34,8 @@ export const UserSchema = z.object( {
         .refine(
             ( date ) => /^\d{2}-\d{2}-\d{4}$/.test( date ),
             { message: 'Formato de data inválido. Use DD-MM-YYYY.' }
-        )
+        ),
+    senha: z.string().nonempty( { message: 'Necessário cadastrar uma senha para o usuário' } )
 
 } )
 

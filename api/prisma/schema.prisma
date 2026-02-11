@@ -24,48 +24,63 @@ model user {
   telefone        String   @db.VarChar(20)
   data_nascimento DateTime
 
-  Psicologo       Psicologo?
+  Psicologo Psicologo?
+
+  userSenhas UserSenha[]
 }
+
 model Psicologo {
-  id           Int      @id @default(autoincrement())
-  cfp          String   @db.VarChar(25)
-  cnpj         String   @db.VarChar(14)
-  nome_clinica String   @db.VarChar(255)
-  user_id      Int      @unique
-  user         user     @relation(fields: [user_id], references: [id])
+  id           Int           @id @default(autoincrement())
+  cfp          String        @db.VarChar(25)
+  cnpj         String        @db.VarChar(14)
+  nome_clinica String        @db.VarChar(255)
+  user_id      Int           @unique
+  user         user          @relation(fields: [user_id], references: [id])
   agendamentos Agendamento[]
 }
 
 model Paciente {
-  id              Int            @id @default(autoincrement())
-  nome            String         @db.VarChar(255)
+  id              Int           @id @default(autoincrement())
+  nome            String        @db.VarChar(255)
   idade           Int
-  sexo            String         @db.VarChar(15)
-  email           String         @db.VarChar(100)
-  telefone        String         @db.VarChar(20)
+  sexo            String        @db.VarChar(15)
+  email           String        @db.VarChar(100)
+  telefone        String        @db.VarChar(20)
   data_nascimento DateTime
-  cpf             String         @db.VarChar(25)
+  cpf             String        @db.VarChar(25)
   agendamentos    Agendamento[]
 }
 
 model Agendamento {
-  id            Int          @id @default(autoincrement())
-  dia           DateTime
-  paciente_id   Int
-  psicologo_id  Int
+  id             Int           @id @default(autoincrement())
+  dia            DateTime
+  paciente_id    Int
+  psicologo_id   Int
   valor_consulta Float
-  observacoes   String?      @db.Text
-  inicio        DateTime
-  duracao       Int          // duration in minutes
-  paciente      Paciente     @relation(fields: [paciente_id], references: [id])
-  psicologo     Psicologo    @relation(fields: [psicologo_id], references: [id])
-  atendimentos  Atendimento[]
+  observacoes    String?       @db.Text
+  inicio         DateTime
+  duracao        Int // duration in minutes
+  paciente       Paciente      @relation(fields: [paciente_id], references: [id])
+  psicologo      Psicologo     @relation(fields: [psicologo_id], references: [id])
+  atendimentos   Atendimento[]
 }
 
 model Atendimento {
-  id              Int         @id @default(autoincrement())
-  anotacoes       String?     @db.Text
-  realizado       Boolean
-  agendamento_id  Int
-  agendamento     Agendamento @relation(fields: [agendamento_id], references: [id])
+  id             Int         @id @default(autoincrement())
+  anotacoes      String?     @db.Text
+  realizado      Boolean
+  agendamento_id Int
+  agendamento    Agendamento @relation(fields: [agendamento_id], references: [id])
+}
+
+model UserSenha {
+  id           String   @id @default(uuid()) @db.Uuid
+  user_id      Int
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user user @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("user_passwords")
 }

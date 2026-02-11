@@ -1,8 +1,13 @@
 import * as React from 'react'
 
 import { cn } from '@/lib/utils'
+import { useField } from 'formik'
 
-function Input({ className, type, ...props }: React.ComponentProps<'input'>) {
+type InputFormikProps = React.ComponentProps<'input'> & {
+  name: string
+}
+function Input ( { className, type, name, ...props }: InputFormikProps ) {
+  const [field, meta] = useField( name )
   return (
     <input
       type={type}
@@ -14,6 +19,7 @@ function Input({ className, type, ...props }: React.ComponentProps<'input'>) {
         className,
       )}
       {...props}
+      {...field}
     />
   )
 }
