@@ -1,19 +1,27 @@
 import { IUserRepository } from "../../domain/repositories/IUsersRepository"
-import { User } from "../../domain/models/user"
+import { User } from "../../domain/entities/user"
 import prisma from '../database/prisma'
-import { DateTime } from "luxon"
 import { convertDate } from "../../utils/convertDate"
 
 export class PrismaUsersRepository implements IUserRepository {
     async create ( user: User ) {
-        const birthDate = user.data_nascimento.toJSDate()
-        await prisma.user.create( { data: { ...user, data_nascimento: birthDate } } )
+        try {
+
+            const usr = await prisma.user.create( { data: { ...user, cpf: user.cpf.replace( /[^a-zA-Z0-9]/g, '' ), telefone: user.telefone.replace( /[^a-zA-Z0-9]/g, '' ) } } )
+            return { ...usr }
+        }
+        catch ( err: any ) {
+            console.error( err )
+            console.error( err.meta )
+            throw err
+
+        }
     }
     async findByEmail ( email: string ) {
         let userToReturn: User
         const user = await prisma.user.findFirst( { where: { email: email } } )
         if ( user && user.data_nascimento ) {
-            userToReturn = { ...user, data_nascimento: DateTime.fromJSDate( user.data_nascimento ) }
+            userToReturn = { ...user }
             return userToReturn
         }
         return null

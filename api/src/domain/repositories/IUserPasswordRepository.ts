@@ -1,10 +1,9 @@
-import { User } from "../models/user"
-import { ICreateUserPassword, UserSenha } from "../models/userPassword"
+import { User } from "../entities/user"
+import { ICreateUserPassword, UserSenha } from "../entities/userPassword"
 
 export interface IUserPasswordRepository {
-    findPasswordsByUserId: ( user_id: number ) => Promise<UserSenha[] | null>
-    getMostRecentPassword: ( user_id: number ) => Promise<void>
-    create: ( user: ICreateUserPassword ) => Promise<void>
-    update: ( userId: number, newUserPassword: UserSenha ) => Promise<User | null>
-
+    findPasswordsByUserId: ( userId: number ) => Promise<UserSenha[] | null>
+    getMostRecentPassword: ( userId: number ) => Promise<UserSenha | null>
+    create: ( user: ICreateUserPassword ) => Promise<UserSenha>
+    resetUserPasswords: () => Promise<void>
 }

@@ -1,6 +1,6 @@
-import { User } from '../../domain/models/user'
-import { IUserRepository } from '../../domain/repositories'
-export class CreateUserService {
+import { User } from '../../../domain/entities/user'
+import { IUserRepository } from '../../../domain/repositories'
+export class CreateUserUseCase {
     constructor( private userRepository: IUserRepository ) { }
     async execute ( data: User ) {
         const userAlreadyExists = await this.userRepository.findByEmail( data.email )
@@ -9,7 +9,7 @@ export class CreateUserService {
             throw new Error( 'User already exists.' )
         }
         else {
-            await this.userRepository.create( data )
+            return await this.userRepository.create( data )
         }
 
     }

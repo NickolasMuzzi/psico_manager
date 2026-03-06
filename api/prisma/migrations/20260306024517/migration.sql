@@ -61,6 +61,17 @@ CREATE TABLE "Atendimento" (
     CONSTRAINT "Atendimento_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "user_passwords" (
+    "id" UUID NOT NULL,
+    "user_id" INTEGER NOT NULL,
+    "passwordHash" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "user_passwords_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "Psicologo_user_id_key" ON "Psicologo"("user_id");
 
@@ -75,3 +86,6 @@ ALTER TABLE "Agendamento" ADD CONSTRAINT "Agendamento_psicologo_id_fkey" FOREIGN
 
 -- AddForeignKey
 ALTER TABLE "Atendimento" ADD CONSTRAINT "Atendimento_agendamento_id_fkey" FOREIGN KEY ("agendamento_id") REFERENCES "Agendamento"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "user_passwords" ADD CONSTRAINT "user_passwords_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;

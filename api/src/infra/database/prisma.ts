@@ -1,7 +1,11 @@
-
-import { PrismaClient } from '../../generated/prisma/client'
-
-// Garante que apenas uma instância do PrismaClient seja criada
-const prisma = new PrismaClient( { datasourceUrl: process.env.DATABASE_URL } )
+import { PrismaClient } from '@prisma/client'
+import { PrismaPg } from "@prisma/adapter-pg"
+const adapter = new PrismaPg( {
+    connectionString: process.env.DATABASE_URL!,
+} )
+const prisma = new PrismaClient( {
+    adapter,
+    log: ['query', 'info', 'warn', 'error']
+} )
 
 export default prisma

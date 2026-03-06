@@ -1,18 +1,22 @@
 import { Router } from 'express'
-const usersRouter = Router()
 import { PrismaUsersRepository } from '../../repositories/users.repository'
-import { CreateUserService } from '../../../services/user/createUserService'
+import { CreateUserUseCase } from '../../../application/useCases/user/createUser.usecase'
 import { UsersController } from '../controllers/users.controllers'
-import { UserSchema } from '../../../domain/dtos/userDTO'
+import { UserSchema } from '../../../application/dtos/userDTO'
 import { validate } from '../middlewares/validateBody'
+import { CreateUserPasswordUseCase } from '../../../application/useCases/userPassword/createUserPassword.usecase'
+import { PrismaUserPasswordRepository } from '../../repositories/userPassword.repository'
 
-const usersRoutes = Router()
+const usersRouter = Router()
 
 const prismaUsersRepository = new PrismaUsersRepository()
-const createUserService = new CreateUserService( prismaUsersRepository )
-const usersController = new UsersController( createUserService )
+const prismaUserPasswordRepository = new PrismaUserPasswordRepository()
 
-usersRouter.post( '/', validate( UserSchema ), ( req, res ) => usersController.handleCreateUser )
+const createUserPasswordUseCase = new CreateUserPasswordUseCase( prismaUserPasswordRepository )
+const createUserUseCase = new CreateUserUseCase( prismaUsersRepository )
+const usersController = new UsersController( createUserUseCase, createUserPasswordUseCase )
+
+usersRouter.post( '/create', validate( UserSchema ), ( req, res ) => usersController.handleCreateUser( req, res ) )
 
 
 export { usersRouter }

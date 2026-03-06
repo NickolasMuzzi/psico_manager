@@ -1,32 +1,22 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model user {
-  id              Int      @id @default(autoincrement())
-  nome            String   @db.VarChar(255)
+  id              Int         @id @default(autoincrement())
+  nome            String      @db.VarChar(255)
   idade           Int
-  cpf             String   @db.VarChar(11)
-  sexo            String   @db.VarChar(15)
-  email           String   @db.VarChar(100)
-  telefone        String   @db.VarChar(20)
+  cpf             String      @db.VarChar(11)
+  sexo            String      @db.VarChar(15)
+  email           String      @db.VarChar(100)
+  telefone        String      @db.VarChar(20)
   data_nascimento DateTime
-
-  Psicologo Psicologo?
-
-  userSenhas UserSenha[]
+  Psicologo       Psicologo?
+  userSenhas      UserSenha[]
 }
 
 model Psicologo {
@@ -35,8 +25,8 @@ model Psicologo {
   cnpj         String        @db.VarChar(14)
   nome_clinica String        @db.VarChar(255)
   user_id      Int           @unique
-  user         user          @relation(fields: [user_id], references: [id])
   agendamentos Agendamento[]
+  user         user          @relation(fields: [user_id], references: [id])
 }
 
 model Paciente {
@@ -57,9 +47,9 @@ model Agendamento {
   paciente_id    Int
   psicologo_id   Int
   valor_consulta Float
-  observacoes    String?       @db.Text
+  observacoes    String?
   inicio         DateTime
-  duracao        Int // duration in minutes
+  duracao        Int
   paciente       Paciente      @relation(fields: [paciente_id], references: [id])
   psicologo      Psicologo     @relation(fields: [psicologo_id], references: [id])
   atendimentos   Atendimento[]
@@ -67,7 +57,7 @@ model Agendamento {
 
 model Atendimento {
   id             Int         @id @default(autoincrement())
-  anotacoes      String?     @db.Text
+  anotacoes      String?
   realizado      Boolean
   agendamento_id Int
   agendamento    Agendamento @relation(fields: [agendamento_id], references: [id])
@@ -79,8 +69,7 @@ model UserSenha {
   passwordHash String
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
-
-  user user @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user         user     @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   @@map("user_passwords")
 }
